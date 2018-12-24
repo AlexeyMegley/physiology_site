@@ -1,6 +1,5 @@
 from django.db import models, connection
 
-# Correct sql table for running tests
 
 class Subject(models.Model):
     

@@ -190,7 +190,7 @@ class Group(models.Model):
                 SELECT id, group_id, rank FROM 
 
                 (
-                    SELECT id, group_id, rank() OVER (PARTITION BY university_id ORDER BY T.points DESC) FROM 
+                    SELECT id, group_id, university_id, rank() OVER (PARTITION BY university_id ORDER BY T.points DESC) FROM 
 
                     (
                       SELECT 1 as id, group_id, university_id, SUM(total_score) as points 

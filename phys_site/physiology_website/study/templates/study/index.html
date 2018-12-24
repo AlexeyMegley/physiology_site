@@ -1,0 +1,16 @@
+{% include "study/header.html" %}
+
+<div class="container">
+    
+    {% for subject_subsections in subsections %}
+        
+        {% for subsection in subject_subsections %}
+	    <div><a href="/subsection/{{ subsection.pk }}/">{{ subsection.name }}</a></div>
+        {% endfor %}
+
+    {% endfor %}
+
+</div>
+    
+</body>
+</html>
