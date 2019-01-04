@@ -25,8 +25,8 @@ class TestModels(TestCase):
         self.group2 = Group.objects.create(university=self.uni2, number='621')
 
         # Create 2 students from 2 different universities
-        self.student1 = Student.objects.create(user=self.user1, university=self.uni1, group=self.group1)
-        self.student2 = Student.objects.create(user=self.user2, university=self.uni2, group=self.group2)
+        self.student1 = Student.objects.create(user=self.user1, group=self.group1)
+        self.student2 = Student.objects.create(user=self.user2, group=self.group2)
 
         # Create 2 tasks
         self.task1 = Task.objects.create(name='Correspondance', is_mandatory=True, points=8, threshold=0.8)

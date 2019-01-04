@@ -10,11 +10,15 @@ from study.models import Subject
 class Student(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    university = models.ForeignKey('University', null=True, blank=True, default=None, on_delete=models.SET_DEFAULT)
     group = models.ForeignKey('Group', null=True, blank=True, on_delete=models.SET_NULL)
     last_lesson = models.ForeignKey('study.Theme', null=True, blank=True, on_delete=models.SET_NULL)
-    favorite_subjects = models.ManyToManyField('study.Subject', blank=True)
+    favorite_subjects = models.ManyToManyField('study.Subsection', blank=True)
     total_score = models.FloatField(default=0)
+
+    class Meta:
+        indexes = [
+           models.Index(fields=['group']),
+        ]
         
     def points_by_subjects(self):
 
@@ -31,7 +35,7 @@ class Student(models.Model):
                                   JOIN study_theme_tasks STT ON SST.theme_id=STT.theme_id
                                   JOIN tasks_task TT ON STT.task_id=TT.id
                                   JOIN tasks_taskresult TR ON TT.id=TR.task_id
-            WHERE TR.id IN (SELECT * FROM solved_tasks) GROUP BY SS.name
+            WHERE TR.id IN (SELECT id FROM solved_tasks) GROUP BY SS.name
             ''', [self.user_id])
 
         return result
@@ -83,7 +87,7 @@ class Teacher(models.Model):
     
     def tracked_students(self):
         """ Get all students from tracked groups """
-        return Student.objects.filter(models.Q(university=self.university) & models.Q(group__in=self.tracked_groups.all()))
+        return Student.objects.filter(models.Q(group__university=self.university) & models.Q(group__in=self.tracked_groups.all()))
     
     def __str__(self):
         return self.user.first_name.capitalize() + ' ' + self.user.last_name.capitalize()
@@ -134,7 +138,7 @@ class University(models.Model):
     
     def total_score(self):
         """ Get total university score """
-        return self.student_set.aggregate(models.Sum('total_score')).get('total_score__sum', 0)
+        return sum(group.total_score() for group in self.group_set.all())
     
     def global_rank(self):
 
@@ -148,8 +152,9 @@ class University(models.Model):
                   SELECT id, university_id, total, rank() OVER (ORDER BY total DESC) FROM
 
                   (
-                    SELECT 1 as id, university_id, SUM(total_score) as total FROM users_student 
-                      GROUP BY university_id 
+                    SELECT 1 as id, university_id, SUM(total_score) as total 
+                           FROM users_student US JOIN users_group UG ON US.group_id=UG.id
+                           GROUP BY university_id
                   ) universities_scores
 
                 ) university_ranks
@@ -190,11 +195,12 @@ class Group(models.Model):
                 SELECT id, group_id, rank FROM 
 
                 (
-                    SELECT id, group_id, university_id, rank() OVER (PARTITION BY university_id ORDER BY T.points DESC) FROM 
+                    SELECT id, group_id, rank() OVER (ORDER BY T.points DESC) FROM 
 
                     (
-                      SELECT 1 as id, group_id, university_id, SUM(total_score) as points 
-                      FROM users_student GROUP BY group_id, university_id
+                      SELECT 1 as id, group_id, SUM(total_score) as points 
+                      FROM users_student
+                      GROUP BY group_id
                     ) T
 
                 ) rank_table
