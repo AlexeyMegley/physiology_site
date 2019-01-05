@@ -1,41 +1,20 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Home page</title>
-    <meta charset="utf-8">
-    <script type="text/javascript" src="lib/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="lib/popper.js"></script>
-    <script type="text/javascript" src="lib/bootstrap.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="styles/bootstrap.min.css">
-</head>
-<body>
-    
-<nav class="navbar navbar-dark bg-dark">
-  <a class="navbar-brand" href="/home">Website Name</a>
-    <div class="dropdown">
-  <button class="btn btn-outline-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Workspace
-  </button>
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <a class="dropdown-item" href="/userid/info">Personal info</a>
-    <a class="dropdown-item" href="/userid/favourite">Favourite</a>
-    <a class="dropdown-item" href="/userid/courses">Courses</a>
-  </div>
-</div>
-
-</nav>
+{% include "study/header.html" %}
 
 <div class="container">
     <h1>Login</h1>
- <form>
-  <div class="form-group">
+ <form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+
+<!--   <div class="form-group">
     <label for="exampleInputEmail1">Email address</label>
     <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
   </div>
   <div class="form-group">
     <label for="exampleInputPassword1">Password</label>
     <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-  </div>
+  </div> -->
+
   <button type="submit" class="btn btn-primary">Log in!</button>
  </form>
 </div>
