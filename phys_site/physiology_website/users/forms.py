@@ -9,9 +9,9 @@ from .models import Student
 
 class StudentCreationForm(forms.Form):
 
-    email = forms.EmailField()
-    password1 = forms.CharField(max_length=30, widget=forms.TextInput(attrs={'placeholder': 'Введите пароль'}))
-    password2 = forms.CharField(max_length=30, widget=forms.TextInput(attrs={'placeholder': 'Повторите введенный пароль'}))
+    email = forms.EmailField(widget=forms.EmailInput())
+    password1 = forms.CharField(max_length=30, widget=forms.PasswordInput(attrs={'placeholder': 'Введите пароль'}))
+    password2 = forms.CharField(max_length=30, widget=forms.PasswordInput(attrs={'placeholder': 'Повторите введенный пароль'}))
     
     def clean(self):
         cleaned_data = super().clean()
@@ -44,5 +44,5 @@ class StudentCreationForm(forms.Form):
 
 class LoginForm(forms.Form):
 
-    email = forms.EmailField()
-    password = forms.CharField(max_length=30, widget=forms.TextInput(attrs={'placeholder': 'Введите пароль'}))
+    email = forms.EmailField(widget=forms.EmailInput())
+    password = forms.CharField(max_length=30, widget=forms.PasswordInput(attrs={'placeholder': 'Введите пароль'}))
