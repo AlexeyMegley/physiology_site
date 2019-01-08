@@ -3,8 +3,10 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth.models import User
+from django.http import Http404
 
 from .forms import StudentCreationForm, LoginForm
+from .models import Student
 
 
 def signup(request):
@@ -42,3 +44,18 @@ def log_out(request):
 @login_required
 def home(request):
     return render(request, 'users/pers_info.html')
+
+
+@login_required
+def personal_info(request):
+    try:
+        student = Student.objects.get(user=request.user)
+    except Student.DoesNotExist:
+        return Http404('Данный пользователь не принадлежит к группе студенты!')
+    
+    return render(request, 'users/pers_info.html', {'student': student})
+
+
+@login_required
+def current_courses(request):
+    return render(request, 'users/courses.html')

@@ -12,7 +12,7 @@ class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     group = models.ForeignKey('Group', null=True, blank=True, on_delete=models.SET_NULL)
     last_lesson = models.ForeignKey('study.Theme', null=True, blank=True, on_delete=models.SET_NULL)
-    favorite_subjects = models.ManyToManyField('study.Subsection', blank=True)
+    favourite_subjects = models.ManyToManyField('study.Subsection', blank=True)
     total_score = models.FloatField(default=0)
 
     class Meta:
@@ -59,6 +59,10 @@ class Student(models.Model):
             if row[0] == self.user.pk:
                 return row[1]
         return rank
+
+    def get_courses(self):
+        """ Get all courses, where student was participating in"""
+        return
     
     def notifications(self):
         """ Get student notifictions """

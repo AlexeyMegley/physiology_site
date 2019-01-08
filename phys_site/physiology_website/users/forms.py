@@ -37,9 +37,7 @@ class StudentCreationForm(forms.Form):
                                         email=self.cleaned_data['email'])
 
         # If everything is OK, create student
-        if user:
-            return Student.objects.create(user=user)
-        return None
+        return Student.objects.create(user=user) if user else None
 
 
 class LoginForm(forms.Form):
